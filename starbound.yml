@@ -1,0 +1,13 @@
+services:
+  starbound_server:
+    image: starbound:latest
+    container_name: starbound
+    ports:
+      - 21025:21025/tcp
+    volumes:
+      - /path/to/volume:/starbound
+    environment:
+      - STEAM_ACCOUNT=accountname
+      - STEAM_PASSWORD=password
+      - MOD_IDS=()
+    restart: unless-stopped
