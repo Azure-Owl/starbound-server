@@ -1,6 +1,6 @@
 services:
   starbound_server:
-    image: starbound:latest
+    image: azureowl/starbound-server:latest
     container_name: starbound
     ports:
       - 21025:21025/tcp
