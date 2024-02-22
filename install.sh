@@ -6,7 +6,7 @@
     +app_update 211820 validate \
     +quit
 
-chmod +x /starbound/linux/starbound_server
+chmod u+x /starbound/linux/starbound_server
 
 #Build the mod install script
 echo force_install_dir /starbound/ >> /steamcmd/installmods.txt
