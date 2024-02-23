@@ -13,6 +13,7 @@ echo force_install_dir /starbound/ >> /steamcmd/installmods.txt
 echo login ${STEAM_ACCOUNT} ${STEAM_PASSWORD} >> /steamcmd/installmods.txt
 
 rm /starbound/mods/*
+rm -R /starbound/steamapps
 
 for mod_id in ${MOD_IDS}
 do

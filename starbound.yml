@@ -10,4 +10,6 @@ services:
       - STEAM_ACCOUNT=accountname
       - STEAM_PASSWORD=password
       - MOD_IDS=()
+      - UID=1000
+      - GID=1000
     restart: unless-stopped
