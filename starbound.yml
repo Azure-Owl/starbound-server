@@ -9,7 +9,7 @@ services:
     environment:
       - STEAM_ACCOUNT=accountname
       - STEAM_PASSWORD=password
-      - MOD_IDS=()
-      - UID=1000
-      - GID=1000
+      # Workshop ids separated by spaces
+      - MOD_IDS=
+    stop_grace_period: 1m
     restart: unless-stopped
