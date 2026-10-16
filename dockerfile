@@ -1,6 +1,5 @@
 FROM ubuntu:26.04
 
-# pebble ships with the base image and is unused
 RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
@@ -11,7 +10,6 @@ RUN apt-get update \
         libvorbisfile3 \
     && rm -rf /var/lib/apt/lists/* /usr/bin/pebble
 
-# Ubuntu images ship an "ubuntu" user with UID/GID 1000
 RUN userdel -r ubuntu 2>/dev/null || true
 
 RUN groupadd -g 1000 starbound \

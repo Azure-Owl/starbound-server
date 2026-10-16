@@ -8,7 +8,7 @@ WORKSHOP=/starbound/steamapps/workshop/content/211820
 INSTALLED_MODS=/starbound/mods/.workshop-mods
 
 # Remove the workshop mods installed on the previous start, so mods removed from
-# MOD_IDS are uninstalled. Mods added to the mods folder by hand are kept.
+# MOD_IDS are uninstalled. Mods added manually are kept.
 mkdir -p /starbound/mods
 if [ -f "$INSTALLED_MODS" ]; then
     while read -r file; do
@@ -16,11 +16,8 @@ if [ -f "$INSTALLED_MODS" ]; then
     done < "$INSTALLED_MODS"
 fi
 rm -f "$INSTALLED_MODS"
-# Download mods fresh on every start
 rm -rf /starbound/steamapps/workshop
 
-# Run steamcmd commands after logging in. The login is passed through a script
-# file so the password doesn't show in the process list.
 run_steamcmd() {
     script=$(mktemp)
     {
@@ -35,7 +32,6 @@ run_steamcmd() {
     return $status
 }
 
-# steamcmd sometimes fails on its first run, so retry
 for attempt in 1 2 3; do
     run_steamcmd "app_update 211820 validate" && [ -f /starbound/linux/starbound_server ] && break
     echo "steamcmd failed (attempt $attempt), retrying..."
@@ -47,8 +43,6 @@ if [ ! -f /starbound/linux/starbound_server ]; then
 fi
 chmod u+x /starbound/linux/starbound_server
 
-# Workshop downloads fail now and then while steamcmd still exits successfully,
-# so retry until every mod's folder exists
 for attempt in 1 2 3; do
     downloads=()
     for mod_id in $MOD_IDS; do
@@ -59,7 +53,6 @@ for attempt in 1 2 3; do
     run_steamcmd "${downloads[@]}"
 done
 
-# Move each mod's files into the mods folder, naming a single contents.pak after its id
 for mod_id in $MOD_IDS; do
     if [ -f "$WORKSHOP/$mod_id/contents.pak" ]; then
         mv "$WORKSHOP/$mod_id/contents.pak" "/starbound/mods/$mod_id.pak"
@@ -78,7 +71,6 @@ cd /starbound/linux
 ./starbound_server &
 SERVER_PID=$!
 
-# Forward docker stop / Kubernetes pod termination to the server so it can save
 shutdown() {
     echo "Received stop signal, shutting down Starbound server..."
     kill -INT "$SERVER_PID" 2>/dev/null
