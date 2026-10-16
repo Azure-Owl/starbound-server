@@ -1,39 +1,35 @@
-FROM ubuntu:22.04
+FROM ubuntu:26.04
 
-ENV STEAM_ACCOUNT account
-ENV STEAM_PASSWORD password
-ENV MOD_IDS ()
-ENV UID 1000
-ENV GID 1000
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        wget \
+        lib32gcc-s1 \
+        libstdc++6 \
+        libvorbisfile3 \
+    && rm -rf /var/lib/apt/lists/* /usr/bin/pebble
 
-# install dependencies
-RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && apt-get autoremove -y
-RUN apt install software-properties-common lib32gcc-s1 libvorbisfile3 wget libstdc++6 -y
+RUN userdel -r ubuntu 2>/dev/null || true
 
-RUN groupadd -g $GID starbound \
-    && useradd -u $UID starbound -g starbound
+RUN groupadd -g 1000 starbound \
+    && useradd -m -u 1000 starbound -g starbound
 
-RUN mkdir -p /starbound \
-    && mkdir -p /steamcmd
+RUN mkdir -p /starbound /steamcmd
 
 ADD install.sh /steamcmd/install.sh
 
-RUN chown -R starbound:starbound /starbound \
-    && chown -R starbound:starbound /steamcmd
+RUN chown -R starbound:starbound /starbound /steamcmd \
+    && chmod u+x /steamcmd/install.sh
 
 VOLUME ["/starbound"]
 
 USER starbound:starbound
 
-# download and install steamcmd
 RUN cd /steamcmd \
     && wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz \
     && tar -zxvf steamcmd_linux.tar.gz \
     && rm steamcmd_linux.tar.gz \
     && chmod u+x ./steamcmd.sh
 
-RUN chmod u+x /steamcmd/install.sh
-
-RUN touch /steamcmd/installmods.txt
-
-ENTRYPOINT ["steamcmd/install.sh"]
+ENTRYPOINT ["/steamcmd/install.sh"]
